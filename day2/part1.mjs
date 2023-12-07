@@ -40,6 +40,6 @@ function parseGames(games) {
 function parseCubes(cubes) {
   cubes.forEach((cube) => {
     const [count, color] = cube.split(" ");
-    if (count > maxCubes[color]) throw "Invalid Game";
+    if (+count > maxCubes[color]) throw "Invalid Game";
   });
 }
