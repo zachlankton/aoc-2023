@@ -6,6 +6,8 @@ const input = x.toString();
 
 const lines = input.split("\n");
 const maxLineLen = lines[0].length - 1;
+const gearRatios = {};
+let lastGearRatio = null;
 
 scanLines();
 
@@ -16,10 +18,13 @@ function scanLines() {
     const line = lines[i];
     const numbersOnLine = getNumbersOnLine(line, i);
     total += numbersOnLine;
-    // console.log(numbersOnLine);
-    // if (i > 10) break;
   }
-  console.log(total);
+  const ratioKeys = Object.keys(gearRatios);
+  const _gears = ratioKeys.filter((key) => gearRatios[key].prod);
+  const gears = _gears.map((key) => gearRatios[key].prod);
+  const gearTotal = gears.reduce((acc, val) => acc + val, 0);
+
+  console.log(gearTotal);
 }
 
 function getNumbersOnLine(line, lineNo) {
@@ -38,7 +43,11 @@ function getNumbersOnLine(line, lineNo) {
     } else {
       if (inNum) isAdjacent = isAdjacent || checkAdjacent(i, lineNo);
       if (inNum && isAdjacent) {
-        lineTotal += +num;
+        if (!lastGearRatio.num) {
+          lastGearRatio.num = +num;
+        } else {
+          lastGearRatio.prod = +num * lastGearRatio.num;
+        }
       }
       num = "";
       isAdjacent = false;
@@ -46,7 +55,11 @@ function getNumbersOnLine(line, lineNo) {
     }
   }
   if (inNum && isAdjacent) {
-    lineTotal += +num;
+    if (!lastGearRatio.num) {
+      lastGearRatio.num = +num;
+    } else {
+      lastGearRatio.prod = +num * lastGearRatio.num;
+    }
   }
   num = "";
   isAdjacent = false;
@@ -66,14 +79,15 @@ function checkAdjacent(i, lineNo) {
   const thisLinePrevChar = lines[lineNo].slice(i, i + 1);
   const nextLinePrevChar = lines[nextLine].slice(i, i + 1);
 
-  if (isSymbol(prevLinePrevChar)) return true;
-  if (isSymbol(thisLinePrevChar)) return true;
-  if (isSymbol(nextLinePrevChar)) return true;
+  if (isSymbol(prevLinePrevChar, prevLine, i)) return true;
+  if (isSymbol(thisLinePrevChar, lineNo, i)) return true;
+  if (isSymbol(nextLinePrevChar, nextLine, i)) return true;
 }
 
-function isSymbol(char) {
-  if (isCharNumber(char)) return false;
-  if (char === ".") return false;
+function isSymbol(char, lineNo, i) {
+  if (char !== "*") return false;
+  gearRatios[`L${lineNo}I${i}`] = gearRatios[`L${lineNo}I${i}`] || {};
+  lastGearRatio = gearRatios[`L${lineNo}I${i}`];
   return true;
 }
 
