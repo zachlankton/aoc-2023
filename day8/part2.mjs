@@ -26,10 +26,9 @@ function scanLines() {
   const instrLen = instructions.length;
   let currentInstrIndex = 0;
   let count = 0;
-  let Zs = "";
+
   const zIntervals = [];
   while (zIntervals.length !== 6) {
-    Zs = "";
     count += 1;
     if (currentInstrIndex === instrLen) currentInstrIndex = 0;
     let currentInstruction = instructions[currentInstrIndex];
@@ -40,7 +39,6 @@ function scanLines() {
       if (lastLetter === "Z") {
         zIntervals.push(count);
       }
-      Zs += node.currentNode[2];
     }
     currentInstrIndex += 1;
   }
