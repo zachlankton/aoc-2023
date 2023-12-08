@@ -27,7 +27,8 @@ function scanLines() {
   let currentInstrIndex = 0;
   let count = 0;
   let Zs = "";
-  while (Zs !== "ZZZZZZ") {
+  const zIntervals = [];
+  while (zIntervals.length !== 6) {
     Zs = "";
     count += 1;
     if (currentInstrIndex === instrLen) currentInstrIndex = 0;
@@ -35,10 +36,34 @@ function scanLines() {
     for (let i = 0; i < 6; i++) {
       const node = startNodes[i];
       node.currentNode = whatever[node.currentNode][currentInstruction];
+      const lastLetter = node.currentNode[2];
+      if (lastLetter === "Z") {
+        zIntervals.push(count);
+      }
       Zs += node.currentNode[2];
     }
     currentInstrIndex += 1;
   }
 
-  console.log(count);
+  const zLen = zIntervals.length - 1;
+  let largest = zIntervals.at(-1);
+  for (let i = 0; i < zLen; i++) {
+    largest = lcm(zIntervals[i], largest);
+  }
+
+  console.log(largest);
+}
+
+// chatGPT gave me these two functions below
+function gcd(a, b) {
+  // Calculate the Greatest Common Divisor (GCD) of two numbers
+  if (b === 0) {
+    return a;
+  }
+  return gcd(b, a % b);
+}
+
+function lcm(a, b) {
+  // Calculate the Least Common Multiple (LCM) of two numbers
+  return Math.abs(a * b) / gcd(a, b);
 }
