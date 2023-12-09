@@ -13,19 +13,19 @@ function scanLines() {
   lines.forEach((line) => {
     if (!line) return;
 
-    // total += num;
+    const [card, data] = line.split(": ");
+    const [winningNumStr, gameCardStr] = data.split(" | ");
+    const winningNums = winningNumStr.split(/\s+/).filter(Boolean);
+    const winningDict = {};
+    winningNums.forEach((num) => (winningDict[num] = true));
+
+    const gameNums = gameCardStr.split(/\s+/).filter(Boolean);
+    const score = gameNums.reduce((acc, cur) => {
+      if (winningDict[cur]) return acc === 0 ? 1 : acc * 2;
+      return acc;
+    }, 0);
+
+    total += score;
   });
   console.log(total);
-}
-
-function stub1() {
-  console.log("stub1");
-
-  // stop prettier from collapsing my whitespace
-}
-
-function stub2() {
-  console.log("stub2");
-
-  // stop prettier from collapsing my whitespace
 }
